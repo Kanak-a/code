@@ -1,0 +1,42 @@
+def graph_coloring(graph, colors):
+    num_vertices = len(graph)
+    solution = [-1] * num_vertices
+
+    def is_safe(vertex, color):
+        for neighbor in range(num_vertices):
+            if graph[vertex][neighbor] and solution[neighbor] == color:
+                return False
+        return True
+
+    def graph_coloring_util(vertex):
+        if vertex == num_vertices:
+            return True
+
+        for color in range(len(colors)):
+            if is_safe(vertex, color):
+                solution[vertex] = color
+                if graph_coloring_util(vertex + 1):
+                    return True
+                solution[vertex] = -1
+
+    if not graph_coloring_util(0):
+        return "No solution exists"
+    
+    result = [colors[color] for color in solution]
+    return result
+
+# Example usage
+graph = [
+    [0, 1, 1, 1],
+    [1, 0, 1, 0],
+    [1, 1, 0, 1],
+    [1, 0, 1, 0]
+]
+
+colors = ["Red", "Green", "Blue"]
+
+coloring = graph_coloring(graph, colors)
+if isinstance(coloring, str):
+    print(coloring)
+else:
+    print("Solution exists. Assigned colors:", coloring)
