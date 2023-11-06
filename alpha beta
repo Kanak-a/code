@@ -1,0 +1,40 @@
+# Initial values of Alpha and Beta
+alpha, beta = -float('inf'), float('inf')
+
+# Defining the minimax function that returns the optimal value for the current player
+def minimax(depth, index, maximizingPlayer, values, alpha, beta):
+
+    if depth == 3:
+        return values[index]
+
+    if maximizingPlayer:
+        optimum = -float('inf')  
+
+        for i in range(0, 2):
+            val = minimax(depth + 1, index * 2 + i, False, values, alpha, beta)
+            optimum = max(optimum, val)  # Update the maximum value found so far
+
+            
+            if beta <= alpha:
+                break
+            alpha = max(alpha, optimum)
+
+        return optimum  
+    else:
+        optimum = float('inf')  
+
+        # Recursion for left and right children
+        for i in range(0, 2):
+            val = minimax(depth + 1, index * 2 + i, True, values, alpha, beta)
+            optimum = min(optimum, val)  
+             
+            if beta <= alpha:
+                break
+            beta = min(beta, optimum) 
+
+        return optimum  # Return the minimum value found
+
+
+if __name__ == "__main__" :
+    values = [5, 7, 12, 6, 3, 18, -9, 4] # The values associated with nodes in the game tree
+    print("The value is:", minimax(0, 0, True, values, alpha, beta))
