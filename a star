@@ -1,0 +1,50 @@
+import heapq
+
+def astar(graph, start, goal):
+    open_list = [(0, start)]
+    came_from = {}
+    g_score = {node: float('inf') for node in graph}
+    g_score[start] = 0
+    
+    while open_list:
+        current_cost, current_node = heapq.heappop(open_list)
+        
+        if current_node == goal:
+            path = []
+            while current_node in came_from:
+                path.append(current_node)
+                current_node = came_from[current_node]
+            path.append(start)
+            return list(reversed(path))
+        
+        for neighbor, cost in graph[current_node].items():
+            tentative_g_score = g_score[current_node] + cost
+            
+            if tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current_node
+                g_score[neighbor] = tentative_g_score
+                f_score = tentative_g_score + heuristic(neighbor, goal)
+                heapq.heappush(open_list, (f_score, neighbor))
+    
+    return None
+
+def heuristic(node, goal):
+    # Simple heuristic: Cost from current node to goal node
+    return 0  # In this example, the heuristic is 0, making A* equivalent to Dijkstra's algorithm
+
+# Example usage
+graph = {
+    'A': {'B': 1, 'D': 3},
+    'B': {'A': 1, 'D': 4, 'E': 2},
+    'C': {'E': 5},
+    'D': {'A': 3, 'B': 4},
+    'E': {'B': 2, 'C': 5}
+}
+start_node = 'A'
+goal_node = 'C'
+path = astar(graph, start_node, goal_node)
+
+if path:
+    print("Shortest path:", path)
+else:
+    print("No path found")
