@@ -1,0 +1,39 @@
+#function that would calculate dfs
+def dfs (graph, start_node, visited = None):
+    if visited is None:
+        visited = set()
+    visited.add(start_node)
+    result = [start_node]
+    for neighbor in graph[start_node]:
+        if neighbor not in visited:
+            result += dfs(graph, neighbor, visited)
+    return result
+
+def bfs (graph, queue, visited):
+    if not queue:
+        return []
+    node = queue.pop(0)
+    visited.add(node)
+    result = [node]
+    for neighbor in graph[node]:
+        if neighbor not in visited and neighbor not in queue:
+            queue.append(neighbor)
+    result += bfs(graph, queue, visited)
+    return result
+    bfs(graph, queue, visited)
+
+#Graph
+graph = {
+    'A': ['B', 'C'],
+    'B' : ['D', 'E'],
+    'C' : ['F'],
+    'D' : [],
+    'E' : ['F'],
+    'F' : []
+}
+
+start_node = 'A'
+visited_nodes = set()
+queue = [start_node]
+print("BFS: ", bfs(graph, queue, visited_nodes))
+print("DFS: ", dfs(graph, 'A'))
