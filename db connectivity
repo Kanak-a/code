@@ -1,0 +1,30 @@
+!pip install mysql-connector-python
+
+
+import mysql.connector
+db = mysql.connector.connect(
+    host = "localhost",
+    user = "root",
+    password = "2003",
+    database = "prac"
+)
+cursor = db.cursor()
+
+#insert data 
+data = ("John", 30)
+cursor.execute ("INSERT INTO sample (name, age) VALUES (%s, %s)", data)
+db.commit()
+data = ("Arav", 25)
+cursor.execute ("INSERT INTO sample (name, age) VALUES (%s, %s)", data)
+db.commit()
+
+cursor.execute("SELECT * FROM sample")
+result = cursor.fetchall()
+print(result)
+
+#update data
+cursor.execute("UPDATE sample SET age = %s WHERE name = %s", (31, "John"))
+db.commit()
+
+cursor.close()
+db.close()
