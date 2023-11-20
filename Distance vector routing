@@ -1,0 +1,58 @@
+INFINITY = float('inf')
+
+def distance_vector_routing(costmat, nodes):
+    routing_table = []
+    for i in range(num_nodes):
+        router_dict = {'dist' : [], 'from': []}
+        for j in range(num_nodes):
+            router_dict['dist'].append(cost_matrix[i][j])
+            router_dict['from'].append(j)
+        routing_table.append(router_dict)
+    count = 0
+    while True:
+        count = 0
+        for i in range(nodes):
+            for j in range(nodes):
+                for k in range(nodes):
+                    if routing_table[i]['dist'][j] > costmat[i][k] + routing_table[k]['dist'][j]:
+                        routing_table[i]['dist'][j] = routing_table[i]['dist'][k] + routing_table[k]['dist'][j]
+                        routing_table[i]['from'][j] = k
+                        count += 1
+
+        if count == 0:
+            break
+    return routing_table  # Return the routing table
+
+def find_path(start_router, end_router, routing_table):
+    path = []
+    next_hop = routing_table[start_router - 1]['from'][end_router - 1]  # Adjust index to start from 0
+    path.append(start_router)
+    while next_hop != end_router - 1:
+        path.append(next_hop + 1)  # Adjust index to start from 1
+        next_hop = routing_table[next_hop]['from'][end_router - 1]  # Adjust index to start from 0
+    path.append(end_router)
+    return path
+
+cost_matrix = [
+    [0, 2, 7],
+    [2, 0, 1],
+    [7, 1, 0]
+]
+num_nodes = 3  # Change this as per your number of nodes
+
+routing_table = distance_vector_routing(cost_matrix, num_nodes)
+# Print routing tables for all routers
+for i in range(num_nodes):
+    print(f"\n\nFor router {i + 1}")
+    for j in range(num_nodes):
+        print(f"Node {j + 1} via {routing_table[i]['from'][j] + 1} Distance {routing_table[i]['dist'][j]}")
+
+# Taking user input for start and end routers
+start = int(input("\nEnter the start router: "))
+end = int(input("Enter the end router: "))
+
+if start < 1 or start > num_nodes or end < 1 or end > num_nodes:
+    print("Invalid input. Please enter valid router numbers.")
+else:
+    path = find_path(start, end, routing_table)
+    print(f"Path from Node {start} to Node {end}: {' -> '.join(str(node) for node in path)}")
