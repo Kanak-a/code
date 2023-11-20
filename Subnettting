@@ -1,0 +1,49 @@
+def is_valid_IPv4(ip):
+    segments = ip.split('.')
+    if len(segments) != 4:
+        return False
+
+    for segment in segments:
+        if not segment.isdigit():
+            return False
+        if not (0 <= int(segment) <= 255):
+            return False
+
+    return True
+
+def calculate_network_host_addresses(ip, mask):
+    IP_components = ip.split('.')
+    mask_components = mask.split('.')
+    network_address  = []
+    host_address = []
+    for i in range(4):
+        network_address.append(int(IP_components[i]) & int(mask_components[i]))
+        host_address.append(int(IP_components[i]) & ~int(mask_components[i]) & 255)
+    return '.'.join(map(str, network_address)), '.'.join(map(str, host_address))
+
+print("SUBNETTING AND SUBNET MASK")
+IP = input("Enter IP Address: ")
+
+subnet_masks = {
+    127 : "255.0.0.0",
+    128 : "255.255.0.0",
+    192 : "255.255.255.0",
+}
+IP = input("Enter a valid IP address: ")
+if not is_valid_IPv4(IP):
+    print("Invalid IP address.")
+    exit()
+
+class_check = int(IP.split('.') [0])
+
+if class_check not in subnet_masks:
+    print("Invalid class or reserved")
+    exit()
+
+mask = subnet_masks[class_check]
+print("Subnet mask: ", mask)
+network_address, host_address = calculate_network_host_addresses(IP, mask)
+print("NETWORK ADDRESS:", network_address)
+print("HOST ADDRESS:", host_address)
+
+
